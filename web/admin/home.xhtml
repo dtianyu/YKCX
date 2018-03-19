@@ -1,0 +1,200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="../WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #546E7A;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="subheader">
+        Dashboard
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="formList">
+            <p:panel id="panelQuery">
+                <f:facet name="header">
+                    信息导入
+                </f:facet>
+                <p:panelGrid id="plgImport" styleClass="plgQuery Wid100">
+                    <p:row>
+                        <p:column colspan="2">
+                            <p:fileUpload id="fileUpload" fileUploadListener="#{examCardManagedBean.handleFileUploadWhenNew}" styleClass="fileUpload"
+                                          allowTypes="/(\.|\/)(xls|xlsx)$/" sizeLimit="5000000" label="成绩" uploadLabel="上传" cancelLabel="还原"
+                                          process="@this" update="formList"/>
+                        </p:column>
+                        <p:column colspan="2">
+                            <p:fileUpload id="photoUpload" fileUploadListener="#{examCardManagedBean.handlePhotoUpload}" styleClass="fileUpload"
+                                          allowTypes="/(\.|\/)(png|jp?g)$/" sizeLimit="5000000" multiple="true" label="照片" uploadLabel="上传" cancelLabel="还原"
+                                          process="@this" update="@this"/>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+                <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                    <h:outputLabel value="姓名" for="queryName" />
+                    <p:inputText id="queryName" value="#{examCardManagedBean.queryName}" title="姓名" />
+                    <h:outputLabel value="专业" for="querySpeciality" />
+                    <p:inputText id="querySpeciality" value="#{examCardManagedBean.querySpeciality}" title="专业" />
+                </p:panelGrid>
+            </p:panel>
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{examCardManagedBean.init()}"  icon="ui-icon-search"  update=":formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{examCardManagedBean.view('examcardView')}" icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="导入" action="#{examCardManagedBean.batchImport()}" icon="ui-icon-disk"
+                                     process="@this" rendered="#{examCardManagedBean.doAdd}"  update="formList"/>
+                    <p:commandButton id="btnEdit" value="编辑" action="#{examCardManagedBean.edit('examcardEdit')}" icon="ui-icon-pencil"
+                                     rendered="#{examCardManagedBean.doEdit}"/>
+                    <p:commandButton id="btnDelete" value="删除" actionListener="#{examCardManagedBean.delete()}" icon="ui-icon-trash"
+                                     rendered="#{examCardManagedBean.doDel}" update=":formList">
+                        <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton id="btnCreate" value="新增" action="#{examCardManagedBean.create('examcardNew')}" icon="ui-icon-plus"
+                                     rendered="#{examCardManagedBean.doAdd}"/>
+
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{examCardManagedBean.reset()}"  icon="ui-icon-refresh"
+                                     process="@this" update="formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{examCardManagedBean.query()}"  icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable id="tabelList" value="#{examCardManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="50"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="50,100,150"  lazy="true" rendered="#{examCardManagedBean.fileName==null}"
+                         selection="#{examCardManagedBean.entityList}" rowKey="#{item.id}" >
+                <f:facet name="header">
+                    信息维护
+                </f:facet>
+                <p:column selectionMode="multiple" style="width: 26px;text-align: center;"/>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formid}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="姓名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="性别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.gender}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="出生年月"/>
+                    </f:facet>
+                    <h:outputText value="#{item.born}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="项目"/>
+                    </f:facet>
+                    <h:outputText value="#{item.project}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="专业"/>
+                    </f:facet>
+                    <h:outputText value="#{item.speciality}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="等级"/>
+                    </f:facet>
+                    <h:outputText value="#{item.lvl}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="成绩"/>
+                    </f:facet>
+                    <h:outputText value="#{item.awards}"/>
+                </p:column>
+            </p:dataTable>
+            <p:dataTable id="tableImport" value="#{examCardManagedBean.addedList}" var="item"  tableStyleClass="tableList"  paginator="true" paginatorPosition="bottom" rows="50"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="50,100,150" rendered="#{examCardManagedBean.fileName!=null}"
+                         selectionMode="single" selection="#{examCardManagedBean.newEntity}" rowKey="#{item.formid}" >
+                <f:facet name="header">
+                    导入明细
+                </f:facet>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="时间"/>
+                    </f:facet>
+                    <h:outputText value="#{item.formid}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="姓名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="性别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.gender}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="出生年月"/>
+                    </f:facet>
+                    <h:outputText value="#{item.born}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="项目"/>
+                    </f:facet>
+                    <h:outputText value="#{item.project}"/>
+                </p:column>
+                <p:column styleClass="Wid20">
+                    <f:facet name="header">
+                        <h:outputText value="专业"/>
+                    </f:facet>
+                    <h:outputText value="#{item.speciality}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="等级"/>
+                    </f:facet>
+                    <h:outputText value="#{item.lvl}"/>
+                </p:column>
+                <p:column styleClass="Wid10">
+                    <f:facet name="header">
+                        <h:outputText value="成绩"/>
+                    </f:facet>
+                    <h:outputText value="#{item.awards}"/>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formList" trigger="btnSave,btnDelete">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="sentinel-layout"/>
+            </p:blockUI>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

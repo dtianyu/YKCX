@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formNew">
+            <h:outputScript name="detailEdit.js" library="js" />
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="home" icon="ui-icon-arrowreturn-1-w"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" action="#{examCardManagedBean.persist()}" icon="ui-icon-disk"
+                                     process="@this,plgNew" update="plgNew"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panel id="panelNew" header="考生维护－新增">
+                <p:panelGrid id="plgNew" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgEdit Wid100">
+                    <p:outputLabel value="日期" for="formid" />
+                    <p:inputText id="formid" value="#{examCardManagedBean.newEntity.formid}" title="formid"
+                                 required="true" requiredMessage="请输入日期"/>
+                    <p:outputLabel value="姓名" for="name" />
+                    <p:inputText id="name" value="#{examCardManagedBean.newEntity.name}" title="Name"
+                                 required="true" requiredMessage="请输入姓名"/>
+                    <p:outputLabel value="性别" for="gender" />
+                    <p:selectOneMenu id="gender" value="#{examCardManagedBean.newEntity.gender}" title="Gender"
+                                     required="true" requiredMessage="请输入性别">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItem itemLabel="男" itemValue="男" />
+                        <f:selectItem itemLabel="女" itemValue="女" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="出生年月" for="born" />
+                    <p:inputText id="born" value="#{examCardManagedBean.newEntity.born}" title="born"
+                                 required="true" requiredMessage="请输入出生年月"/>
+                    <p:outputLabel value="国籍" for="nationality" />
+                    <p:inputText id="nationality" value="#{examCardManagedBean.newEntity.nationality}" title="nationality"
+                                 required="true" requiredMessage="请输入姓名"/>
+                    <p:outputLabel value="民族" for="minority" />
+                    <p:inputText id="minority" value="#{examCardManagedBean.newEntity.minority}" title="Name"
+                                 required="true" requiredMessage="请输入民族"/>
+                    <p:outputLabel value="机构" for="organization" />
+                    <p:inputText id="organization" value="#{examCardManagedBean.newEntity.organization}" title="project"
+                                 required="true" requiredMessage="请输入机构"/>
+                    <p:outputLabel value="项目" for="project" />
+                    <p:inputText id="project" value="#{examCardManagedBean.newEntity.project}" title="project"
+                                 required="true" requiredMessage="请输入项目"/>
+                    <p:outputLabel value="专业" for="speciality" />
+                    <p:inputText id="speciality" value="#{examCardManagedBean.newEntity.speciality}" title="speciality"
+                                 required="true" requiredMessage="请输入专业"/>
+                    <p:outputLabel value="等级" for="lvl" />
+                    <p:inputText id="lvl" value="#{examCardManagedBean.newEntity.lvl}" title="lvl"
+                                 required="true" requiredMessage="请输入等级"/>
+                    <p:outputLabel value="成绩" for="awards" />
+                    <p:inputText id="awards" value="#{examCardManagedBean.newEntity.awards}" title="awards"
+                                 required="true" requiredMessage="请输入成绩"/>
+                    <p:outputLabel value="身份证" for="idcard" />
+                    <p:inputText id="idcard" value="#{examCardManagedBean.newEntity.idcard}" title="Idcard" />
+                    <p:outputLabel value="手机号" for="phone" />
+                    <p:inputText id="phone" value="#{examCardManagedBean.newEntity.phone}" title="phone" />
+                    <p:outputLabel value="照片" for="photo" />
+                    <p:inputText id="photo" value="#{examCardManagedBean.newEntity.photo}" title="photo" />
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
